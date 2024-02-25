@@ -38,12 +38,12 @@ A Personal companion device for blind people to help them for navigation,communi
 
 ##### Hardware
 
--Raspberry pi 5
- Microphone
--Webcam
--Power Bank (20000 mah)
--GPS Module
--Gyroscope sensor
+- Raspberry pi 5
+- Microphone
+- Webcam
+- Power Bank (20000 mah)
+- GPS Module
+- Gyroscope sensor
 
 #### Features
 - Enviromental Awarness
