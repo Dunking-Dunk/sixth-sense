@@ -1,5 +1,6 @@
 # SIXTH SENSE
-![sixth logo](https://github.com/Kishorecoder96/sixth-sense/assets/115532083/cc191ba0-8883-424a-8639-bd261032a4ee)
+![sixth logo (1)](https://github.com/Kishorecoder96/sixth-sense/assets/115532083/d05649f2-fa63-424c-80c3-c491bc632fa7)
+
 
 A Personal companion device for blind people to help them for navigation,communication and environmental awareness
 
