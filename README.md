@@ -2,6 +2,9 @@
 
 A Personal companion device for blind people to help them for navigation,communication and environmental awareness
 
+##### PROJECT ARCHITECTURE
+
+
 ### TECHNOLOGY ARSENAL
 
 ##### FRONTEND
@@ -33,12 +36,12 @@ A Personal companion device for blind people to help them for navigation,communi
 
 ##### Hardware
 
-- Raspberry Pi 5
-- Microphone
-- Webcam
-- Power Bank (20000 mah)
-- GPS Module
-- Gyroscope sensor
+-Raspberry pi 5
+ Microphone
+-Webcam
+-Power Bank (20000 mah)
+-GPS Module
+-Gyroscope sensor
 
 #### Features
 - Enviromental Awarness
@@ -77,12 +80,42 @@ Once a object is detected it uses the color of the object to measure the distanc
 
 ---
 
-The main python file which include all the speech to text converting functions which helps in reading out the warnings and texts from all the above mentioned files.And also with the help of Gemini and Gemini Vision Pro the blind person is able to have a full fledged human like conversation and at the same time fulfilling their day to day needs and requirements.
+This is the main python file which include all the speech to text converting functions which helps in reading out the warnings and texts from all the above mentioned files.And also with the help of Gemini and Gemini Vision Pro the blind person is able to have a full fledged human like conversation and at the same time fulfilling their day to day needs and requirements
+# Project Name
 
-![Sixth sense](https://github.com/Kishorecoder96/sixth-sense/assets/115532083/cc73c12d-22da-4b98-8d7c-1091cf686654)
+This is a React Native project for sixth sense [caretaker app].
+
+## Getting Started
+
+To get started with this project, follow these steps:
+
+### Prerequisites
+
+Make sure you have the following installed:
+
+- Node.js
+- npm 
+
+### Installation
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/Kishorecoder96/sixth-sense.git
+```
+2.Install dependencies:
+```bash
+npm install
+npm start
+```
+---
+   
 
 ##### STATUS
 95 % of prototype is ready and fully functional .we need to improve on navigation and increase the features  for navigation
+
+
+
 
 
 
