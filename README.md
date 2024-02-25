@@ -79,7 +79,7 @@ Once a object is detected it uses the color of the object to measure the distanc
 
 The main python file which include all the speech to text converting functions which helps in reading out the warnings and texts from all the above mentioned files.And also with the help of Gemini and Gemini Vision Pro the blind person is able to have a full fledged human like conversation and at the same time fulfilling their day to day needs and requirements.
 
-
+![Sixth sense](https://github.com/Kishorecoder96/sixth-sense/assets/115532083/cc73c12d-22da-4b98-8d7c-1091cf686654)
 
 
 
