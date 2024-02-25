@@ -81,7 +81,8 @@ The main python file which include all the speech to text converting functions w
 
 ![Sixth sense](https://github.com/Kishorecoder96/sixth-sense/assets/115532083/cc73c12d-22da-4b98-8d7c-1091cf686654)
 
-
+##### STATUS
+95 % of prototype is ready and fully functional .we need to improve on navigation and increase the features  for navigation
 
 
 
