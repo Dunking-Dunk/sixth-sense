@@ -1,9 +1,10 @@
 # SIXTH SENSE
+![sixth logo](https://github.com/Kishorecoder96/sixth-sense/assets/115532083/cc191ba0-8883-424a-8639-bd261032a4ee)
 
 A Personal companion device for blind people to help them for navigation,communication and environmental awareness
 
 ##### PROJECT ARCHITECTURE
-
+![Sixth sense](https://github.com/Kishorecoder96/sixth-sense/assets/115532083/4424170b-c36f-4bd9-8f3f-0736811866b7)
 
 ### TECHNOLOGY ARSENAL
 
