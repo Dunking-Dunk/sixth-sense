@@ -65,7 +65,7 @@ Searches for faces and once detected it measures the distance between the partic
 ---
 ##### Fall Detection
 
-using gyroscope sensor we get the data from pi 5 and using the model we process the data. we know that our  user is fallen or not
+Utilizing the gyroscope sensor data obtained from Pi 5, we process the information using our model to determine whether the user has fallen or not.
 
 
 ---
