@@ -114,13 +114,14 @@ npm install
 npm start
 ```
 ---
-for python code :
+For python code :
 ```python
 pip install -r requirments.txt
 ```
 ```python
 python main.py
 ```
+Note: Make sure to add the 'faces' folder in the directory inorder to recognize the faces.
 
 
 ##### STATUS
