@@ -1,58 +1,31 @@
 import React, {useCallback, useEffect, useState} from "react";
-import { View, StyleSheet, Image, TextInput, ScrollView, Button, ActivityIndicator, TouchableOpacity, Text, FlatList } from 'react-native'
-import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { View, StyleSheet, Image, TextInput, ScrollView, Button, ActivityIndicator, TouchableOpacity, Text, FlatList, Alert } from 'react-native'
 import { setDoc,doc, updateDoc, arrayUnion, getDoc, onSnapshot} from "firebase/firestore";
 import * as ImagePicker from 'expo-image-picker';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { useForm, Controller } from "react-hook-form"
+import * as yup from 'yup'
+import { yupResolver } from "@hookform/resolvers/yup"
 
+import { uploadToFirebase } from "../../utils/firebaseStorage";
 import useUserStore from '../../store/userStore'
 import { db } from "../../firebaseConfig";
 import CustomButton from '../../components/CustomButton'
 import Colors from "../../constants/Colors";
+import Loader from "../../components/Loader";
+import { style } from "../../utils/commonStyle";
 
 const People = () => {
     const currentUser = useUserStore((state) => state.currentUser)
-    const [name, setName] = useState('')
     const [image, setImage] = useState({ name: '', uri: null })
     const [contacts, setContacts] = useState(null)
+    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
         onSnapshot(doc(db, "visionPeople", currentUser.visionUser), (doc) => {
             setContacts(doc.data())
         });
     }, [])
-
-    const uploadToFirebase = async (uri, name, onProgress) => {
-        const fetchResponse = await fetch(uri);
-        const theBlob = await fetchResponse.blob();
-      
-        const imageRef = ref(getStorage(), `images/${name}`);
-      
-        const uploadTask = uploadBytesResumable(imageRef, theBlob);
-      
-        return new Promise((resolve, reject) => {
-          uploadTask.on(
-            "state_changed",
-            (snapshot) => {
-              const progress =
-                (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-              onProgress && onProgress(progress);
-            },
-            (error) => {
-              // Handle unsuccessful uploads
-              console.log(error);
-              reject(error);
-            },
-            async () => {
-              const downloadUrl = await getDownloadURL(uploadTask.snapshot.ref);
-              resolve({
-                downloadUrl,
-                metadata: uploadTask.snapshot.metadata,
-              });
-            }
-          );
-        });
-      };
 
     const pickImage = useCallback(async() => {
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -68,33 +41,6 @@ const People = () => {
             setImage({ uri: result.assets[0].uri, name: fileName } );
         }
     }, [])
-    
-    async function handleSubmit() {
-        if (image.uri !== null && name !== '') {
-            const uploadResp = await uploadToFirebase(image.uri, image.name, (progress) => console.log(progress))
-            const exist = await getDoc(doc(db, 'visionPeople', currentUser.visionUser))     
-            const ref = doc(db,"visionPeople" ,currentUser.visionUser)
-            if (exist.exists()) {
-     await updateDoc(ref, {
-                peoples: arrayUnion({
-                    name,
-                    image: uploadResp.downloadUrl
-                })
-            })
-            } else {
-                await setDoc(ref, {
-                    peoples: {
-                        name,
-                        image: uploadResp.downloadUrl
-                    }
-                })
-            }
-       
-            setImage({uri: null, name: '' })
-            setName('')
-        }
-      
-    }
 
     const Item = ({ item }) => {
         return (
@@ -103,6 +49,49 @@ const People = () => {
                 <Text style={{fontSize: 22,fontWeight:'400'}}>{item.name}</Text>
             </View>
         )
+    }
+
+    const schema = yup.object({
+        name: yup.string().required().min(3)
+    })
+
+    const {control, handleSubmit, formState: {errors}} = useForm({
+        defaultValues: {
+            name: ''
+        },
+        resolver: yupResolver(schema)
+    })
+
+        
+    async function onSubmit(data) {
+        if (image.uri !== null) {
+            const uploadResp = await uploadToFirebase(image.uri, image.name, () => {
+                setLoading(true)
+            })
+            const exist = await getDoc(doc(db, 'visionPeople', currentUser.visionUser))     
+            const ref = doc(db,"visionPeople" ,currentUser.visionUser)
+            if (exist.exists()) {
+     await updateDoc(ref, {
+                peoples: arrayUnion({
+                    name: data.name,
+                    image: uploadResp.downloadUrl
+                })
+            })
+            } else {
+                await setDoc(ref, {
+                    peoples: {
+                        name: data.name,
+                        image: uploadResp.downloadUrl
+                    }
+                })
+            }
+
+            setLoading(false)
+            setImage({uri: null, name: '' })
+            setName('')
+        }else {
+            Alert.alert('No Image', 'Please upload a image to submit')
+        } 
     }
 
     return (
@@ -119,17 +108,28 @@ const People = () => {
                             <Image source={{ uri: image.uri }} style={styles.image} />
                             <TouchableOpacity onPress={() => setImage({name: '', uri: null})} style={{position: 'absolute', right: 10, zIndex: 2, top: 10}}>
                             <MaterialIcons name="cancel" size={32} color={Colors.three}  />
-                            </TouchableOpacity>
-                           
+                            </TouchableOpacity>                      
                             </View>
                 ) }
       
        
             <View style={styles.TextInputContainer}>
-                <TextInput placeholder="Person Name" style={styles.TextInput} onChangeText={(text) => setName(text)} value={name} placeholderTextColor={Colors.four} autoCorrect keyboardType="default" maxLength={1000} />
+                <Controller
+                control={control}
+                rules={{
+                    required: true
+                }}
+                render={({ field: { onChange, onBlur, value } }) => (<TextInput placeholder="Person Name" style={styles.TextInput} onBlur={onBlur} onChangeText={onChange} value={value} placeholderTextColor={Colors.four} autoCorrect keyboardType="default" maxLength={1000} />
+    )}
+    name="name"
+                />
+                <Text style={style.errorText}>{errors.name?.message}</Text>
+                
             </View>
-                <CustomButton style={styles.btn} onPress={handleSubmit}>
-                    <Text style={{color: Colors.one}}>Add</Text>
+                <CustomButton style={styles.btn} onPress={handleSubmit(onSubmit)}>
+                    {
+                        loading ? <Loader style={{width: 250, height: 250}}/> :   <Text style={{color: Colors.one}}>Add</Text>
+                    }
            </CustomButton>
             </View>
             <View style={styles.peoplesContainer}>

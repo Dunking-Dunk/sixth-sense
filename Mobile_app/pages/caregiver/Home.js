@@ -91,15 +91,15 @@ const Home = () => {
                 </MapView>
                 {navigate && (
                     <View style={styles.dataContainer}>
-                        <Text style={styles.dataText}>{distanceTime.distance} Km</Text>
-                        <Text style={styles.dataText}>{distanceTime.duration} Min</Text>
+                        <Text style={styles.dataText}>{distanceTime.distance.toFixed(2)} Km</Text>
+                        <Text style={styles.dataText}>{distanceTime.duration.toFixed(2)} Min</Text>
                         </View>
                 )}
                 <TouchableOpacity style={styles.visionCenter} onPress={visionCenter} >
-                    <FontAwesome6 name="person" size={32} color={Colors.two}/>
+                    <FontAwesome6 name="person" size={32} color={Colors.three}/>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.navigationCenter} onPress={navigationCenter} >
-                <FontAwesome5 name="route" size={32} color={Colors.two} />
+                <FontAwesome5 name="route" size={32} color={Colors.three} />
                 </TouchableOpacity>
             </View>
         )

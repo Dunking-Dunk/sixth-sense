@@ -81,7 +81,7 @@ tracksViewChanges={false}
      }}
      onPress={onCenter}
    >
-     <MaterialIcons name="gps-fixed" size={34} color={Colors.two} />
+     <MaterialIcons name="gps-fixed" size={34} color={Colors.three} />
    </TouchableOpacity>
    </View>  
   );

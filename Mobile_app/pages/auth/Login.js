@@ -1,31 +1,51 @@
-import React, { useState } from "react";
+import React, { useRef } from "react";
 import { Text, View, StyleSheet, Button, TextInput, KeyboardAvoidingView, Platform } from 'react-native'
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import Toast from 'react-native-root-toast';
+import * as yup from 'yup'
+import {yupResolver} from '@hookform/resolvers/yup'
+import { useForm, Controller } from "react-hook-form";
+import LottieView from 'lottie-react-native'
 
+import { style } from "../../utils/commonStyle";
 import Color from "../../constants/Colors";
 import CustomButton from "../../components/CustomButton";
 
 const Login = () => {
-    const [login,setLogin] = useState({
-        password: "",
-        email: ""
-    })
+    const animation = useRef(null);
     const auth = getAuth()
 
     const inputHandler = (value,title) => {
         setLogin((state) => ({...state, [title]: value}))
     }
 
-    const submitHandler = () => {
-        const {email, password} = login
+const schema = yup.object({
+    email: yup.string().email().required(),
+    password: yup.string().required()
+})
+
+    const {control, handleSubmit, formState: {errors}} = useForm({
+        defaultValues: {
+            email: '',
+            password: ''
+        },
+        resolver: yupResolver(schema)
+    })
+
+    const submitHandler = (data) => {
+        const {email, password} = data
     signInWithEmailAndPassword(auth, email, password)
     .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
         Toast.show(errorMessage, {
             duration: Toast.durations.SHORT,
-            position: Toast.positions.TOP,
+            position: Toast.positions.BOTTOM,
+            shadowColor: 'red',
+            containerStyle: {
+                backgroundColor: 'red',
+                marginBottom: 50
+            },
             shadow: true,
             animation: true,
             hideOnPress: true,
@@ -36,10 +56,34 @@ const Login = () => {
     return (
         <KeyboardAvoidingView style={styles.form} behavior={Platform.OS === "ios" ? "padding" : "height"} keyboardVerticalOffset={100}>
         <View style={styles.textInputContainer}>
-            <Text style={styles.name}>Vision</Text>
-            <TextInput style={styles.input} placeholder="Email" onChangeText={(text) => inputHandler(text, 'email')} value={login.email} placeholderTextColor={Color.four} autoCorrect keyboardType="email-address"/>
-            <TextInput style={styles.input} placeholder="Password" onChangeText={(text) => inputHandler(text, 'password')} value={login.password} placeholderTextColor={Color.four} secureTextEntry={true}/>
-                    <CustomButton style={styles.formButtons} title="Login" color={Color.four} onPress={submitHandler}>
+        <LottieView
+        autoPlay
+        ref={animation}
+        style={{
+          width: 200,
+          height: 150,
+        }}
+        source={require('../../assets/lottie/eye.json')}
+      />
+            <Controller
+             control={control}
+             rules={{
+                 required: true
+             }}
+            name="email"
+            render={({field: {onBlur, value, onChange}}) => ( <TextInput style={styles.input} placeholder="Email" onChangeText={onChange} value={value} onBlur={onBlur} placeholderTextColor={Color.four} autoCorrect keyboardType="email-address"/>)}
+            />
+                <Text style={style.errorText}>{errors.email?.message}</Text>
+              <Controller
+             control={control}
+             rules={{
+                 required: true
+             }}
+            name="password"
+            render={({field: {onBlur, value, onChange}}) => (  <TextInput style={styles.input} placeholder="Password" onBlur={onBlur} onChangeText={onChange} value={value} placeholderTextColor={Color.four} secureTextEntry={true}/>)}
+            />
+                <Text style={style.errorText}>{errors.password?.message}</Text>
+                    <CustomButton style={styles.formButtons} title="Login" color={Color.four} onPress={handleSubmit(submitHandler)}>
                         <Text style={{color: Color.one}}>Login</Text>
                 </CustomButton>
         </View> 
