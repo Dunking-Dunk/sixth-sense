@@ -3,7 +3,6 @@ import { Text, View } from "react-native";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { BlurView } from 'expo-blur';
 import { FontAwesome, MaterialIcons  } from '@expo/vector-icons';
-import MapContextProvider from '../components/Map/MapContextProvider';
 
 import HomeScreen from "./caregiver/Home";
 import PeopleScreen from './caregiver/People'
@@ -14,7 +13,6 @@ const Tab = createBottomTabNavigator();
 
 const Main = () => {
   return (
-<MapContextProvider>
 <Tab.Navigator screenOptions={{headerShown: false, tabBarActiveTintColor: Colors.two}} >
         
         <Tab.Screen name="Home" component={HomeScreen} options={{
@@ -39,8 +37,6 @@ const Main = () => {
         />
 
       </Tab.Navigator> 
-</MapContextProvider>  
-
     )
 }
 

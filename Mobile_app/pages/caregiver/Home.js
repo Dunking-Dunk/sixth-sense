@@ -5,8 +5,7 @@ import { LogBox } from 'react-native';
 LogBox.ignoreLogs(['new NativeEventEmitter']); // Ignore log notification by message
 LogBox.ignoreAllLogs()
 
-import { FontAwesome6, FontAwesome5 } from '@expo/vector-icons';
-import VisionMarker from '../../components/Map/VisionMarker'
+import { FontAwesome5 } from '@expo/vector-icons';
 import { db } from "../../firebaseConfig";
 import MapView from '../../components/Map/MapView'
 import { doc, onSnapshot } from "firebase/firestore";
@@ -14,14 +13,11 @@ import useUserStore from "../../store/userStore";
 import Loader from "../../components/Loader";
 import Colors from "../../constants/Colors";
 import useMapContext from "../../components/Map/useMapContext";
-import { LATITUDE_DELTA, LONGITUDE_DELTA } from "../../components/Map/MapView";
-
 
 const { width, height } = Dimensions.get('window');
-const ASPECT_RATIO = width / height;
 const GOOGLE_MAPS_APIKEY ='AIzaSyAaCWjzUJ1XziqSuWycOTNorOmfe2swDIc';
 
-const Home = () => {
+const Home = ({navigation}) => {
     const currentUser = useUserStore((state) => state.currentUser)
     const userCoords = useUserStore((state) => state.userCoords)
     const { map, setMap } = useMapContext()
@@ -30,28 +26,11 @@ const Home = () => {
         distance: null,
         duration: null
     })
-    const [navigate,setNavigate] = useState(false)
-    const [visionUser, setVisionUser] = useState(null)
+    const [direction,setDirection] = useState(false)
+    const visionUser = useUserStore((state) => state.sixthSenseUser)
  
-    useEffect(() => {
-        if (currentUser)
- onSnapshot(doc(db, "visionUser", currentUser.visionUser), (doc) => {
-    setVisionUser(doc.data())
-});
-    }, [currentUser])
-    
-    function visionCenter() {
-        if (map)
-        map.animateToRegion({
-            latitude: visionUser.coords.latitude,
-            longitude: visionUser.coords.longitude,
-                    latitudeDelta: LATITUDE_DELTA,
-        longitudeDelta: LONGITUDE_DELTA,
-          });
-    }
-
     function navigationCenter() { 
-        setNavigate((state) => !state)
+        setDirection((state) => !state)
     }
 
     print(distanceTime)
@@ -60,8 +39,8 @@ const Home = () => {
         return (
             <View style={{flex: 1}}>
                 <MapView>
-                    <VisionMarker userCoords={visionUser.coords} />
-                    {navigate && (
+                    {/* <VisionMarker userCoords={visionUser.coords} /> */}
+                    {direction && (
                     <MapViewDirections
                     origin={userCoords}
                     destination={visionUser.coords}
@@ -89,16 +68,18 @@ const Home = () => {
                     )}
 
                 </MapView>
-                {navigate && (
+                {direction && (
                     <View style={styles.dataContainer}>
-                        <Text style={styles.dataText}>{distanceTime.distance.toFixed(2)} Km</Text>
-                        <Text style={styles.dataText}>{distanceTime.duration.toFixed(2)} Min</Text>
+                        <Text style={styles.dataText}>{distanceTime.distance?.toFixed(2)} Km</Text>
+                        <Text style={styles.dataText}>{distanceTime.duration?.toFixed(2)} Min</Text>
                         </View>
                 )}
-                <TouchableOpacity style={styles.visionCenter} onPress={visionCenter} >
-                    <FontAwesome6 name="person" size={32} color={Colors.three}/>
-                </TouchableOpacity>
                 <TouchableOpacity style={styles.navigationCenter} onPress={navigationCenter} >
+                <FontAwesome5 name="route" size={32} color={Colors.three} />
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.geoFence} onPress={() => {
+                    navigation.navigate('GeoFence')
+                }} >
                 <FontAwesome5 name="route" size={32} color={Colors.three} />
                 </TouchableOpacity>
             </View>
@@ -112,17 +93,16 @@ const Home = () => {
 export default Home
 
 const styles = StyleSheet.create({
-    visionCenter: {
-        position: 'absolute',
-        bottom: 15,
-        right: 80,
-        zIndex: 2,
-    },
     navigationCenter: {
         position: 'absolute',
         bottom: 15,
         right: 130,
         zIndex: 2,
+    },
+    geoFence: {
+        position: 'absolute',
+        bottom: 15,
+        left: 20
     },
     dataContainer: {
         position: 'absolute',

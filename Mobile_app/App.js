@@ -16,6 +16,8 @@ import Main from './pages/Main'
 import Login from './pages/auth/Login'
 import Register from './pages/auth/Register'
 import Landing from './pages/auth/Landing';
+import GeoFence from './pages/caregiver/Geofence';
+import MapContextProvider from './components/Map/MapContextProvider';
 
 
 const Stack = createNativeStackNavigator()
@@ -37,17 +39,21 @@ function Navigation() {
   }
 
   return (
-    <Stack.Navigator >
-      <Stack.Screen name='Main' component={Main} options={{
-            headerTitle: "Vision",
+    <MapContextProvider>
+        <Stack.Navigator  screenOptions={{
+      headerTitle: "Sense",
             headerTitleStyle: {
               marginLeft: 50
             },
             headerRight: () => <HeaderButtons  HeaderButtonComponent={CustomHeaderButton}>
                 <Item title="logout" iconName='log-out' onPress={onLogout}/>
             </HeaderButtons >
-          }}/>
+    }}>
+      <Stack.Screen name='Main' component={Main} />
+              <Stack.Screen name='GeoFence' component={GeoFence}/>
     </Stack.Navigator>
+    </MapContextProvider>
+  
   )
 }
 
@@ -68,7 +74,7 @@ export default function App() {
       if (user) {
         async function helper() {
           const currentUser = await getDoc(doc(db, "users", user.uid));
-          setCurrentUser(currentUser.data())
+          setCurrentUser({...currentUser.data(), uid: user.uid})
         }
         helper()
         setLoading({ loggedIn: true, loaded: true })
