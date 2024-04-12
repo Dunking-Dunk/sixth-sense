@@ -4,6 +4,7 @@ import MapView, {
     Circle,
     AnimatedRegion,
     PROVIDER_GOOGLE,
+  Polygon
   } from "react-native-maps";
   import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
 import { StyleSheet, View, Dimensions, TouchableOpacity, Platform } from 'react-native';
@@ -23,8 +24,8 @@ export default function Map({ children }) {
   const markerRef = useRef();
   const userCoords =  useUserStore((state) => state.userCoords)
   const setUserCoords =  useUserStore((state) => state.setUserCoords)
-    const location = new useLocation()
-  
+  const location = new useLocation()
+
   useEffect(() => {
     location.getUserLocation(setUserCoords)
       if (userCoords && map)
@@ -68,9 +69,10 @@ ref={markerRef}
 coordinate={userCoords}
 tracksViewChanges={false}
 >
-<FontAwesome name="circle-o" size={18}/>
+<FontAwesome name="circle-o" size={18} />
 </Marker.Animated>
-     )}
+          )}
+
 </MapView>
 <TouchableOpacity
      style={{

@@ -1,3 +1,5 @@
+import { getStorage, ref ,uploadBytesResumable, getDownloadURL } from "firebase/storage";
+
 export const uploadToFirebase = async (uri, name, onProgress) => {
     const fetchResponse = await fetch(uri);
     const theBlob = await fetchResponse.blob();

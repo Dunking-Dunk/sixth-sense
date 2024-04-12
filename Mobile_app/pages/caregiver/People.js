@@ -119,7 +119,7 @@ const People = () => {
                 rules={{
                     required: true
                 }}
-                render={({ field: { onChange, onBlur, value } }) => (<TextInput placeholder="Person Name" style={styles.TextInput} onBlur={onBlur} onChangeText={onChange} value={value} placeholderTextColor={Colors.four} autoCorrect keyboardType="default" maxLength={1000} />
+                render={({ field: { onChange, onBlur, value } }) => (<TextInput placeholder="Person Name" style={styles.TextInput} onBlur={onBlur} onChangeText={onChange} value={value} placeholderTextColor={Colors.two} autoCorrect keyboardType="default" maxLength={1000} />
     )}
     name="name"
                 />
@@ -133,7 +133,7 @@ const People = () => {
            </CustomButton>
             </View>
             <View style={styles.peoplesContainer}>
-                <Text style={{ fontSize: 24, fontWeight: 600, marginBottom: 20 }}>All Contacts</Text>
+                <Text style={{ fontSize: 24, fontWeight: 600, marginBottom: 10, color: Colors.two }}>All Contacts</Text>
                 {contacts?.peoples ? (
          <FlatList data={contacts.peoples}
          keyExtractor={item => item.image}
@@ -176,10 +176,9 @@ const styles = StyleSheet.create({
         borderBottomColor: Colors.four
     },
     btn: {
-        marginTop: 20,
         width: '90%',
         height: 50,
-        backgroundColor: Colors.two,
+        backgroundColor: Colors.three,
         alignItems: 'center',
         justifyContent: 'center',
     },

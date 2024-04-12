@@ -15,10 +15,6 @@ const Login = () => {
     const animation = useRef(null);
     const auth = getAuth()
 
-    const inputHandler = (value,title) => {
-        setLogin((state) => ({...state, [title]: value}))
-    }
-
 const schema = yup.object({
     email: yup.string().email().required(),
     password: yup.string().required()
@@ -60,10 +56,10 @@ const schema = yup.object({
         autoPlay
         ref={animation}
         style={{
-          width: 200,
-          height: 150,
-        }}
-        source={require('../../assets/lottie/eye.json')}
+            width: 250,
+            height: 200,
+          }}
+        source={require('../../assets/lottie/eye1.json')}
       />
             <Controller
              control={control}
@@ -117,14 +113,14 @@ const styles = StyleSheet.create({
         width: '100%',
         height: 50,
         marginBottom: 20,
-        borderBottomColor: Color.four,
+        borderBottomColor: Color.three,
         borderBottomWidth: 1,
-        color: Color.four
+        color: Color.two
     },
     formButtons: {
         marginTop: 20,
         width: '100%',
-        backgroundColor: Color.four,
+        backgroundColor: Color.three,
         height: 50,
         alignItems: 'center',
         justifyContent: 'center',

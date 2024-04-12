@@ -8,6 +8,7 @@ import {HeaderButtons, Item} from 'react-navigation-header-buttons'
 import { RootSiblingParent } from 'react-native-root-siblings';
 import { doc, getDoc } from "firebase/firestore";
 import registerNNPushToken, {registerIndieID, unregisterIndieDevice} from 'native-notify';
+import * as Localization from 'expo-localization'
 
 import { db } from './firebaseConfig';
 import useUserStore from './store/userStore';
@@ -16,6 +17,8 @@ import Main from './pages/Main'
 import Login from './pages/auth/Login'
 import Register from './pages/auth/Register'
 import Landing from './pages/auth/Landing';
+import Colors from './constants/Colors';
+import { translations } from './utils/multiLanguage';
 
 
 const Stack = createNativeStackNavigator()
@@ -23,7 +26,7 @@ const auth = getAuth();
 
 function Auth() {
   return (
-      <Stack.Navigator initialRouteName='Landing' screenOptions={{ headerStyle: { backgroundColor: '#000' }, headerTintColor: '#fff' }}>
+      <Stack.Navigator initialRouteName='Landing' screenOptions={{ headerStyle: { backgroundColor: Colors.three }, headerTintColor: '#fff' }}>
       <Stack.Screen name="Landing" component={Landing}  options={{ headerShown: false }}  />
       <Stack.Screen name="Login" component={Login} />
       <Stack.Screen name="Register" component={Register} />
@@ -37,11 +40,12 @@ function Navigation() {
   }
 
   return (
-    <Stack.Navigator >
+    <Stack.Navigator screenOptions={{ headerStyle: { backgroundColor: Colors.two }, headerTintColor: '#fff' }} >
       <Stack.Screen name='Main' component={Main} options={{
-            headerTitle: "Vision",
+            headerTitle: "Sense",
             headerTitleStyle: {
-              marginLeft: 50
+              marginLeft: 50,
+              color: Colors.one
             },
             headerRight: () => <HeaderButtons  HeaderButtonComponent={CustomHeaderButton}>
                 <Item title="logout" iconName='log-out' onPress={onLogout}/>
@@ -59,7 +63,7 @@ export default function App() {
   const [loading, setLoading] = useState({ loggedIn: false, loaded: false })
   const { loggedIn, loaded } = loading
   const setCurrentUser = useUserStore((state) => state.setCurrentUser)
-  
+  let [local, setLocale] = useState(Localization.getLocales())
   
 
 

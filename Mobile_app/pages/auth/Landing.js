@@ -10,12 +10,12 @@ const LandingPage = props => {
     return (
     <View style={styles.view}>
             <ImageBackground source={require('../../assets/images/landingBackground.png')} style={styles.bgImg}>
-            <Text style={styles.title}>Vision</Text>
+            <Text style={styles.title}>Sixth Sense</Text>
             <View style={styles.buttonView}>
-                <CustomButton onPress={() => { props.navigation.navigate('Register') }} color={Color.four} style={styles.button}>
+                <CustomButton onPress={() => { props.navigation.navigate('Register') }}  style={styles.button}>
                     <Text style={{color: Color.one}}>Register</Text>
                 </CustomButton>
-                <CustomButton onPress={() => { props.navigation.navigate('Login') }} color={Color.four} style={styles.button}>
+                <CustomButton onPress={() => { props.navigation.navigate('Login') }}  style={styles.button}>
                     <Text style={{color: Color.one}}>Login</Text>
                 </CustomButton>
                 </View>
@@ -39,15 +39,19 @@ const styles = StyleSheet.create({
         justifyContent: 'space-evenly',
         alignItems: 'center'
     }, title: {
-        fontSize: 120,
+        fontSize: 100,
         fontWeight: '600',
-        color: Color.one
+        color: Color.two,
+        textShadowColor: 'rgba(0, 0, 0, 0.5)',
+        textShadowOffset: {width: -1, height: 1},
+        textShadowRadius: 10,
+        textAlign: 'center'
     },
     button: {
         height: 50,
         width: 120,
         color: Color.one,
-        backgroundColor: Color.four,
+        backgroundColor: Color.three,
         alignItems: 'center',
         justifyContent: 'center',
     },

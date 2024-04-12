@@ -15,7 +15,7 @@ const Tab = createBottomTabNavigator();
 const Main = () => {
   return (
 <MapContextProvider>
-<Tab.Navigator screenOptions={{headerShown: false, tabBarActiveTintColor: Colors.two}} >
+<Tab.Navigator screenOptions={{headerShown: false, tabBarActiveTintColor: Colors.two }} >
         
         <Tab.Screen name="Home" component={HomeScreen} options={{
             tabBarLabel: 'Home',

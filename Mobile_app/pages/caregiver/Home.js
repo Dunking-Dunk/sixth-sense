@@ -91,8 +91,8 @@ const Home = () => {
                 </MapView>
                 {navigate && (
                     <View style={styles.dataContainer}>
-                        <Text style={styles.dataText}>{distanceTime.distance.toFixed(2)} Km</Text>
-                        <Text style={styles.dataText}>{distanceTime.duration.toFixed(2)} Min</Text>
+                        <Text style={styles.dataText}>{distanceTime.distance?.toFixed(2)} Km</Text>
+                        <Text style={styles.dataText}>{distanceTime.duration?.toFixed(2)} Min</Text>
                         </View>
                 )}
                 <TouchableOpacity style={styles.visionCenter} onPress={visionCenter} >
