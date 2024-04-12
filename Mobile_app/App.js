@@ -9,7 +9,11 @@ import { RootSiblingParent } from 'react-native-root-siblings';
 import { doc, getDoc } from "firebase/firestore";
 import registerNNPushToken, {registerIndieID, unregisterIndieDevice} from 'native-notify';
 import * as Localization from 'expo-localization'
+import * as BackgroundFetch from 'expo-background-fetch';
 
+import { BACKGROUND_FETCH_TASK } from './pages/caregiver/Geofence';
+import GeoFence from './pages/caregiver/Geofence';
+import MapContextProvider from './components/Map/MapContextProvider';
 import { db } from './firebaseConfig';
 import useUserStore from './store/userStore';
 import CustomHeaderButton from './components/headerButton';
@@ -40,21 +44,34 @@ function Navigation() {
   }
 
   return (
-    <Stack.Navigator screenOptions={{ headerStyle: { backgroundColor: Colors.two }, headerTintColor: '#fff' }} >
-      <Stack.Screen name='Main' component={Main} options={{
-            headerTitle: "Sense",
-            headerTitleStyle: {
-              marginLeft: 50,
-              color: Colors.one
-            },
-            headerRight: () => <HeaderButtons  HeaderButtonComponent={CustomHeaderButton}>
-                <Item title="logout" iconName='log-out' onPress={onLogout}/>
-            </HeaderButtons >
-          }}/>
+    <MapContextProvider>
+ <Stack.Navigator screenOptions={{ headerStyle: { backgroundColor: Colors.two }, headerTintColor: '#fff',  headerTitle: "Sense",
+    headerTitleStyle: {
+      marginLeft: 50,
+      color: Colors.one
+      },
+      headerRight: () => <HeaderButtons  HeaderButtonComponent={CustomHeaderButton}>
+      <Item title="logout" iconName='log-out' onPress={onLogout}/>
+  </HeaderButtons >
+    }} >
+      <Stack.Screen name='Main' component={Main} />
+      <Stack.Screen name='GeoFence' component={GeoFence}/>
     </Stack.Navigator>
+    </MapContextProvider>
   )
 }
 
+async function registerBackgroundFetchAsync() {
+  return BackgroundFetch.registerTaskAsync(BACKGROUND_FETCH_TASK, {
+    minimumInterval: 60 * 1, // 15 minutes
+    stopOnTerminate: false, // android only,
+    startOnBoot: true, // android only
+  });
+}
+
+async function unregisterBackgroundFetchAsync() {
+    return BackgroundFetch.unregisterTaskAsync(BACKGROUND_FETCH_TASK);
+}
 
 export default function App() {
   registerNNPushToken(19745, 'iV4ceRtjBYygvWfLa5Bu3z');
@@ -65,14 +82,13 @@ export default function App() {
   const setCurrentUser = useUserStore((state) => state.setCurrentUser)
   let [local, setLocale] = useState(Localization.getLocales())
   
-
-
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         async function helper() {
+          await registerBackgroundFetchAsync()
           const currentUser = await getDoc(doc(db, "users", user.uid));
-          setCurrentUser(currentUser.data())
+          setCurrentUser({...currentUser.data(), uid: user.uid})
         }
         helper()
         setLoading({ loggedIn: true, loaded: true })
@@ -83,10 +99,10 @@ export default function App() {
     })
 
     return () => {
+      unregisterBackgroundFetchAsync()
       unregisterIndieDevice('sub-id-1', 19745, 'iV4ceRtjBYygvWfLa5Bu3z');
     }
   }, [])
-
 
   return (
     <RootSiblingParent>

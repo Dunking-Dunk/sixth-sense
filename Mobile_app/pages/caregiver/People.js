@@ -22,10 +22,11 @@ const People = () => {
     const [loading, setLoading] = useState(false)
 
     useEffect(() => {
-        onSnapshot(doc(db, "visionPeople", currentUser.visionUser), (doc) => {
+        if (currentUser)
+        onSnapshot(doc(db, "visionPeople", currentUser?.visionUser), (doc) => {
             setContacts(doc.data())
         });
-    }, [])
+    }, [currentUser])
 
     const pickImage = useCallback(async() => {
         let result = await ImagePicker.launchImageLibraryAsync({
