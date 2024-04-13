@@ -5,6 +5,7 @@ import { LogBox } from 'react-native';
 LogBox.ignoreLogs(['new NativeEventEmitter']); // Ignore log notification by message
 LogBox.ignoreAllLogs()
 import { FontAwesome5,MaterialCommunityIcons } from '@expo/vector-icons';
+import { Circle } from "react-native-maps";
 import MapView from '../../components/Map/MapView'
 import useUserStore from "../../store/userStore";
 import Loader from "../../components/Loader";
@@ -28,7 +29,7 @@ const Home = ({ navigation }) => {
     function navigationCenter() { 
         setDirection((state) => !state)
     }
-
+    
     if (currentUser) {
         return (
             <View style={{ flex: 1 }}>
@@ -59,7 +60,7 @@ const Home = ({ navigation }) => {
                                         
                         />
                     )}
-
+                     <Circle radius={visionUser?.radius} center={visionUser?.geoFence} strokeWidth={2} strokeColor={Colors.three} fillColor="rgba(144, 210, 109, 0.5)"/>
                 </MapView>
                 {direction && (
                     <View style={styles.dataContainer}>

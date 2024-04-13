@@ -63,9 +63,7 @@ function Navigation() {
 
 async function registerBackgroundFetchAsync() {
   return BackgroundFetch.registerTaskAsync(BACKGROUND_FETCH_TASK, {
-    minimumInterval: 60 * 1, // 15 minutes
-    stopOnTerminate: false, // android only,
-    startOnBoot: true, // android only
+    minimumInterval:  1 * 60, // 1 minutes
   });
 }
 

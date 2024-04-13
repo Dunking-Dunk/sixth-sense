@@ -10,7 +10,7 @@ import Slider from '@react-native-community/slider';
 import { MaterialCommunityIcons, FontAwesome6 } from '@expo/vector-icons'
 import CustomButton from '../../components/CustomButton'
 import { db } from '../../firebaseConfig'
-import { setDoc, doc, getDoc } from 'firebase/firestore'
+import { setDoc, doc, getDoc, GeoPoint } from 'firebase/firestore'
 import Loader from '../../components/Loader'
 import { calcDistAtoB } from '../../utils/calcCoordinate'
 
@@ -20,9 +20,8 @@ export const BACKGROUND_FETCH_TASK = 'monitor-sixthSense';
 TaskManager.defineTask(BACKGROUND_FETCH_TASK, async () => {
     try {
         // fetch data here...
-        const backendData = "Simulated fetch " + Math.random();
-        console.log("myTask() ", backendData);
-        setStateFn(backendData);
+        const sixthSenseUser = await getDoc(doc(db, 'visionUser', 'Wert'))
+        console.log(sixthSenseUser)
         return backendData
           ? BackgroundFetch.Result.NewData
           : BackgroundFetch.Result.NoData;
@@ -45,10 +44,11 @@ const GeoFence = () => {
   
     useEffect(() => {
         const helperFunction = async () => {
-            const user = await getDoc(doc(db,'users', currentUser.uid))
+            const user = await getDoc(doc(db,'visionUser', currentUser.visionUser))
             const data = user.data()
-            if (data.radius && data.coord) {
-                setCoord(data.coord)
+           
+            if (data.radius && data.geoFence) {
+                setCoord(data.geoFence)
                 setRadius(data.radius)
             }   
         }
@@ -70,7 +70,7 @@ const GeoFence = () => {
 
     const handleSubmit = useCallback(async() => {
         setLoading(true)
-        await setDoc( doc(db, 'users', currentUser.uid), {radius, coord}, {merge: true})
+        await setDoc( doc(db,'visionUser', currentUser.visionUser), {radius, geoFence: coord}, {merge: true})
         setLoading(false)
     }, [currentUser, radius, coord])
 
