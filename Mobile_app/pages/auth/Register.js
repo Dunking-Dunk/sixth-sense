@@ -17,6 +17,7 @@ import Loader from "../../components/Loader";
 import {db} from '../../firebaseConfig'
 import Color from "../../constants/Colors";
 import CustomButton from "../../components/CustomButton"
+import { useTranslation } from "react-i18next";
 
 const Register = () => { 
   const animation = useRef(null);
@@ -27,8 +28,8 @@ const Register = () => {
     })
     const auth = getAuth()
     const [page,setPage] = useState(0)
-
-  
+    const {t} = useTranslation()
+    
     const schema = yup.object({
       email: yup.string().email().required(),
       password: yup.string().required(),
@@ -161,7 +162,7 @@ const Register = () => {
                  required: true
              }}
             name="username"
-            render={({field: {onBlur, value, onChange}}) => (<TextInput style={styles.input} placeholder="Name" onChangeText={onChange} value={value} onBlur={onBlur} placeholderTextColor={Color.two} autoCorrect keyboardType="default"/>)}
+            render={({field: {onBlur, value, onChange}}) => (<TextInput style={styles.input} placeholder={t('Name')} onChangeText={onChange} value={value} onBlur={onBlur} placeholderTextColor={Color.two} autoCorrect keyboardType="default"/>)}
                         />
                         <Text style={style.errorText}>{errors.username?.message}</Text>
               <Controller
@@ -170,7 +171,7 @@ const Register = () => {
                  required: true
              }}
             name="email"
-            render={({field: {onBlur, value, onChange}}) => ( <TextInput style={styles.input} placeholder="Email" onChangeText={onChange} value={value} onBlur={onBlur} placeholderTextColor={Color.two} autoCorrect keyboardType="email-address"/>)}
+            render={({field: {onBlur, value, onChange}}) => ( <TextInput style={styles.input} placeholder={t('Email')} onChangeText={onChange} value={value} onBlur={onBlur} placeholderTextColor={Color.two} autoCorrect keyboardType="email-address"/>)}
                         />        
                                 <Text style={style.errorText}>{errors.email?.message}</Text>
               <Text style={styles.label}>Secret Key (comes with the product)</Text>
@@ -180,7 +181,7 @@ const Register = () => {
                  required: true
              }}
             name="secret"
-            render={({field: {onBlur, value, onChange}}) => (  <TextInput style={styles.input} placeholder="Secret Key" onChangeText={onChange} value={value} onBlur={onBlur} placeholderTextColor={Color.two} autoCorrect keyboardType="default"/>)}
+            render={({field: {onBlur, value, onChange}}) => (  <TextInput style={styles.input} placeholder={t('Secret Key')} onChangeText={onChange} value={value} onBlur={onBlur} placeholderTextColor={Color.two} autoCorrect keyboardType="default"/>)}
                         />
                                 <Text style={style.errorText}>{errors.secret?.message}</Text>
             <Controller
@@ -199,14 +200,14 @@ const Register = () => {
                 ) :
                     (
                         <View style={{ width: '100%', height: '100%' }}>
-                            <Text style={{ textAlign: 'center', fontSize: 18, marginBottom: 5, color: Color.three }}>Fill the detail about the Vision User</Text>
+                            <Text style={{ textAlign: 'center', fontSize: 18, marginBottom: 5, color: Color.three }}>Fill the detail about the Sixth-Sense User</Text>
                             <Controller
              control={control}
              rules={{
                  required: true
              }}
             name="disabledName"
-            render={({field: {onBlur, value, onChange}}) => (  <TextInput style={styles.input} placeholder="Name" onChangeText={onChange} onBlur={onBlur} value={value} placeholderTextColor={Color.two} autoCorrect keyboardType="default"/>)}
+            render={({field: {onBlur, value, onChange}}) => (  <TextInput style={styles.input} placeholder={t('Name')} onChangeText={onChange} onBlur={onBlur} value={value} placeholderTextColor={Color.two} autoCorrect keyboardType="default"/>)}
                             />          
                                     <Text style={style.errorText}>{errors.disabledName?.message}</Text>
                             <Controller
@@ -215,11 +216,11 @@ const Register = () => {
                  required: true
              }}
             name="disabledAge"
-            render={({field: {onBlur, value, onChange}}) => (<TextInput style={styles.input} placeholder="Age" onBlur={onBlur}  onChangeText={onChange} value={value} placeholderTextColor={Color.two} autoCorrect keyboardType="number-pad"/>)}
+            render={({field: {onBlur, value, onChange}}) => (<TextInput style={styles.input} placeholder={t('Age')} onBlur={onBlur}  onChangeText={onChange} value={value} placeholderTextColor={Color.two} autoCorrect keyboardType="number-pad"/>)}
               />                  
                                <Text style={style.errorText}>{errors.disabledAge?.message}</Text>     
                             <View style={styles.col}>
-                                <Text style={{color: Color.two}}>Profile Image</Text>
+                                <Text style={{ color: Color.two }}>{t('Profile')} {t('Image')}</Text>
                                 {!register.image ? (
       <View style={styles.imageContainer}>
       <TouchableOpacity style={styles.imageSubContainer} onPress={pickImage}>
@@ -237,11 +238,11 @@ const Register = () => {
                             </View>
                             <View style={styles.row}>
                             <CustomButton style={styles.formButtons}  color={Color.three} onPress={pageHandler}>
-                               <Text style={{color: Color.one}}>Back</Text>
+                                    <Text style={{ color: Color.one }}>{t('Back')}</Text>
                                 </CustomButton>
                                 <CustomButton style={styles.formButtons}  color={Color.three} onPress={handleSubmit(submitHandler)}>
                                 {
-                        loading ? <Loader style={{width: 250, height: 250}}/> :   <Text style={{color: Color.one}} >Register</Text>
+                                        loading ? <Loader style={{ width: 250, height: 250 }} /> : <Text style={{ color: Color.one }} >{t('Register')}</Text>
                     }
                        </CustomButton>
                             </View>

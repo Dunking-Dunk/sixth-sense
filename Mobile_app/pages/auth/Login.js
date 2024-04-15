@@ -10,10 +10,12 @@ import LottieView from 'lottie-react-native'
 import { style } from "../../utils/commonStyle";
 import Color from "../../constants/Colors";
 import CustomButton from "../../components/CustomButton";
+import { useTranslation } from "react-i18next";
 
 const Login = () => {
     const animation = useRef(null);
     const auth = getAuth()
+    const { t } = useTranslation()
 
 const schema = yup.object({
     email: yup.string().email().required(),
@@ -67,7 +69,7 @@ const schema = yup.object({
                  required: true
              }}
             name="email"
-            render={({field: {onBlur, value, onChange}}) => ( <TextInput style={styles.input} placeholder="Email" onChangeText={onChange} value={value} onBlur={onBlur} placeholderTextColor={Color.four} autoCorrect keyboardType="email-address"/>)}
+            render={({field: {onBlur, value, onChange}}) => ( <TextInput style={styles.input} placeholder={t('Email')} onChangeText={onChange} value={value} onBlur={onBlur} placeholderTextColor={Color.four} autoCorrect keyboardType="email-address"/>)}
             />
                 <Text style={style.errorText}>{errors.email?.message}</Text>
               <Controller
@@ -80,7 +82,7 @@ const schema = yup.object({
             />
                 <Text style={style.errorText}>{errors.password?.message}</Text>
                     <CustomButton style={styles.formButtons} title="Login" color={Color.four} onPress={handleSubmit(submitHandler)}>
-                        <Text style={{color: Color.one}}>Login</Text>
+                    <Text style={{ color: Color.one }}>{t('Login')}</Text>
                 </CustomButton>
         </View> 
     </KeyboardAvoidingView>

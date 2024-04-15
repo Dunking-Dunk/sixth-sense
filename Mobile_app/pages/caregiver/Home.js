@@ -4,8 +4,8 @@ import MapViewDirections from 'react-native-maps-directions';
 import { LogBox } from 'react-native';
 LogBox.ignoreLogs(['new NativeEventEmitter']); // Ignore log notification by message
 LogBox.ignoreAllLogs()
-import { FontAwesome5,MaterialCommunityIcons } from '@expo/vector-icons';
-import { Circle } from "react-native-maps";
+import { FontAwesome5,FontAwesome6, MaterialCommunityIcons} from '@expo/vector-icons';
+import { Circle, Polyline, Marker } from "react-native-maps";
 import MapView from '../../components/Map/MapView'
 import useUserStore from "../../store/userStore";
 import Loader from "../../components/Loader";
@@ -26,6 +26,7 @@ const Home = ({ navigation }) => {
     })
     const [direction,setDirection] = useState(false)
     const visionUser = useUserStore((state) => state.sixthSenseUser)
+
     function navigationCenter() { 
         setDirection((state) => !state)
     }
@@ -60,7 +61,11 @@ const Home = ({ navigation }) => {
                                         
                         />
                     )}
-                     <Circle radius={visionUser?.radius} center={visionUser?.geoFence} strokeWidth={2} strokeColor={Colors.three} fillColor="rgba(144, 210, 109, 0.5)"/>
+                    <Circle radius={visionUser?.radius} center={visionUser?.geoFence} strokeWidth={2} strokeColor={Colors.three} fillColor="rgba(144, 210, 109, 0.5)" />
+                    <Polyline coordinates={[{ latitude: visionUser.geoFence?.latitude, longitude: visionUser.geoFence?.longitude }, { latitude: visionUser?.coords.latitude, longitude: visionUser?.coords.longitude }]} strokeWidth={3} strokeColor={Colors.three} lineDashPattern={[1, 1]} style={{ position: 'relative' }} />
+                    <Marker coordinate={visionUser.geoFence}>
+                <MaterialCommunityIcons name="map-marker-radius" size={34} color={Colors.three} />
+                </Marker>
                 </MapView>
                 {direction && (
                     <View style={styles.dataContainer}>
@@ -74,7 +79,7 @@ const Home = ({ navigation }) => {
                 <TouchableOpacity style={styles.geoFence} onPress={() => {
                     navigation.navigate('GeoFence')
                 }} >
-                  <MaterialCommunityIcons name="map-outline" size={32} color={Colors.three} />
+                <FontAwesome6 name="map-marked" size={24} color={Colors.three} />
                 </TouchableOpacity>
             </View>
         )

@@ -3,20 +3,22 @@ import { Text, View, StyleSheet, Button, ImageBackground } from 'react-native'
 
 import Color from '../../constants/Colors'
 import CustomButton from '../../components/CustomButton'
+import { useTranslation } from 'react-i18next'
 
 
 const LandingPage = props => {
-
+    const { t } = useTranslation()
+    
     return (
     <View style={styles.view}>
             <ImageBackground source={require('../../assets/images/landingBackground.png')} style={styles.bgImg}>
-            <Text style={styles.title}>Sixth Sense</Text>
+                <Text style={styles.title}>{t('Sixth Sense')}</Text>
             <View style={styles.buttonView}>
                 <CustomButton onPress={() => { props.navigation.navigate('Register') }}  style={styles.button}>
-                    <Text style={{color: Color.one}}>Register</Text>
+                        <Text style={{ color: Color.one }}>{t('Register')}</Text>
                 </CustomButton>
                 <CustomButton onPress={() => { props.navigation.navigate('Login') }}  style={styles.button}>
-                    <Text style={{color: Color.one}}>Login</Text>
+                        <Text style={{ color: Color.one }}>{t('Login')}</Text>
                 </CustomButton>
                 </View>
                 </ImageBackground>

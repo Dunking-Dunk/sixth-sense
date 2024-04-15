@@ -1,7 +1,6 @@
 import {View , Text, StyleSheet} from 'react-native'
 import MapView from '../../components/Map/MapView'
 import {Circle, Marker, Polyline} from 'react-native-maps'
-import * as TaskManager from 'expo-task-manager';
 
 import useUserStore from '../../store/userStore'
 import Colors from '../../constants/Colors'
@@ -13,22 +12,9 @@ import { db } from '../../firebaseConfig'
 import { setDoc, doc, getDoc, GeoPoint } from 'firebase/firestore'
 import Loader from '../../components/Loader'
 import { calcDistAtoB } from '../../utils/calcCoordinate'
+import { useTranslation } from 'react-i18next'
 
 
-export const BACKGROUND_FETCH_TASK = 'monitor-sixthSense';
-
-TaskManager.defineTask(BACKGROUND_FETCH_TASK, async () => {
-    try {
-        // fetch data here...
-        const sixthSenseUser = await getDoc(doc(db, 'visionUser', 'Wert'))
-        console.log(sixthSenseUser)
-        return backendData
-          ? BackgroundFetch.Result.NewData
-          : BackgroundFetch.Result.NoData;
-      } catch (err) {
-        return BackgroundFetch.Result.Failed;
-      }
-  });
 
 const GeoFence = () => {
     const currentUser = useUserStore((state) => state.currentUser)
@@ -41,6 +27,7 @@ const GeoFence = () => {
     const [radius, setRadius] = useState(100)
     const [distance, setDistance] = useState(0)
     const [inBound, setInBound] = useState(null)
+    const {t} = useTranslation()
   
     useEffect(() => {
         const helperFunction = async () => {
@@ -94,9 +81,9 @@ const GeoFence = () => {
                     <View style={{paddingVertical: 4, paddingHorizontal: 10, alignItems: 'center', justifyContent: 'center', backgroundColor: Colors.one, borderRadius: 50}}>
                     <FontAwesome6 name="person" size={32} color={inBound? Colors.three : 'red'}/>
                     </View>
-                    <Text style={{ ...style.text, color: Colors.one}}>{inBound ? 'In the safe zone' : 'Outside the safe zone '}</Text>
+                    <Text style={{ ...style.text, color: Colors.one}}>{inBound ? `${t("Inside the safe zone")}` :  `${t("Outside the safe zone")}`}</Text>
                 </View>
-                <Text style={{ color: Colors.two, fontSize: 18, fontWeight: 600}}>Long press in the map to change the position of the Circle Boundary</Text>
+                <Text style={{ color: Colors.two, fontSize: 18, fontWeight: 600 }}>{t('Long press in the map to change the position of the Circle Boundary')}</Text>
                 <View style={{...style.row, gap: 8}}>
                 <Text style={{...style.text, fontWeight: 500, color: Colors.three}}>Radius</Text>
                 <Text style={style.text}>{radius}/Meter</Text>
@@ -116,7 +103,7 @@ const GeoFence = () => {
 />
 <CustomButton style={style.button} onPress={handleSubmit}>
 {
-                        loading ? <Loader style={{width: 250, height: 250}}/> :   <Text style={{color: Colors.one}}>Add</Text>
+                        loading ? <Loader style={{ width: 250, height: 250 }} /> : <Text style={{ color: Colors.one }}>{t('Add')}</Text>
                     }
 </CustomButton>
             </View>

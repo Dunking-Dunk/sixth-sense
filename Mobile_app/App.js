@@ -1,28 +1,64 @@
 import  React, {useState, useEffect} from 'react';
-import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
-import {HeaderButtons, Item} from 'react-navigation-header-buttons'
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+
 import { RootSiblingParent } from 'react-native-root-siblings';
 import { doc, getDoc } from "firebase/firestore";
 import registerNNPushToken, {registerIndieID, unregisterIndieDevice} from 'native-notify';
-import * as Localization from 'expo-localization'
 import * as BackgroundFetch from 'expo-background-fetch';
+import * as TaskManager from 'expo-task-manager';
+import * as Notifications from 'expo-notifications';
 
-import { BACKGROUND_FETCH_TASK } from './pages/caregiver/Geofence';
 import GeoFence from './pages/caregiver/Geofence';
 import MapContextProvider from './components/Map/MapContextProvider';
 import { db } from './firebaseConfig';
 import useUserStore from './store/userStore';
-import CustomHeaderButton from './components/headerButton';
 import Main from './pages/Main'
 import Login from './pages/auth/Login'
 import Register from './pages/auth/Register'
 import Landing from './pages/auth/Landing';
 import Colors from './constants/Colors';
-import { translations } from './utils/multiLanguage';
+import { calcDistAtoB } from './utils/calcCoordinate';
+import  './utils/multiLanguage';
+import useNotification from './hooks/use-notification';
+import { useTranslation } from 'react-i18next';
+import Setting from './pages/caregiver/Setting';
+
+
+const BACKGROUND_FETCH_TASK = 'monitor-sixthSense';
+
+TaskManager.defineTask(BACKGROUND_FETCH_TASK, async () => {
+
+  const sixthSenseUser = await getDoc(doc(db, 'visionUser', 'Wert'))
+  const data = sixthSenseUser.data()
+  const distance = calcDistAtoB(data.coords.latitude, data.coords.longitude, data.geoFence.latitude, data.geoFence.longitude)
+
+  if (distance > (data.radius / 1000)) {
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: "Alert ❌",
+        body: 'Sixth-Sense User Has crossed the safe region',
+      },
+      trigger: null,
+    });
+  }
+            
+  return BackgroundFetch.BackgroundFetchResult.NewData
+})
+
+async function registerBackgroundFetchAsync() {
+  return BackgroundFetch.registerTaskAsync(BACKGROUND_FETCH_TASK, {
+    minimumInterval: 1 * 60, // 1 minutes
+    stopOnTerminate: false, // android only,
+    startOnBoot: true, // android only
+  });
+}
+
+async function unregisterBackgroundFetchAsync() {
+    return BackgroundFetch.unregisterTaskAsync(BACKGROUND_FETCH_TASK);
+}
 
 
 const Stack = createNativeStackNavigator()
@@ -39,54 +75,48 @@ function Auth() {
 }
 
 function Navigation() {
-  const onLogout = () => {
-    signOut(auth)
-  }
+  const {t} = useTranslation()
 
   return (
     <MapContextProvider>
- <Stack.Navigator screenOptions={{ headerStyle: { backgroundColor: Colors.two }, headerTintColor: '#fff',  headerTitle: "Sense",
-    headerTitleStyle: {
-      marginLeft: 50,
-      color: Colors.one
-      },
-      headerRight: () => <HeaderButtons  HeaderButtonComponent={CustomHeaderButton}>
-      <Item title="logout" iconName='log-out' onPress={onLogout}/>
-  </HeaderButtons >
-    }} >
+ <Stack.Navigator screenOptions={ { headerShown: false,  headerTitle:t('Sense'),
+            headerStyle: {
+              backgroundColor: Colors.three,
+        },
+            animation: 'slide_from_right',
+            headerTitleStyle: {
+              color: Colors.one
+          }}} >
       <Stack.Screen name='Main' component={Main} />
-      <Stack.Screen name='GeoFence' component={GeoFence}/>
+        <Stack.Screen name='GeoFence' component={GeoFence} options={{
+          headerShown: 'true',
+          
+        }}/>
+        <Stack.Screen name='Setting' component={Setting} options={{
+          headerShown: 'true',
+        }} />
     </Stack.Navigator>
     </MapContextProvider>
   )
 }
 
-async function registerBackgroundFetchAsync() {
-  return BackgroundFetch.registerTaskAsync(BACKGROUND_FETCH_TASK, {
-    minimumInterval:  1 * 60, // 1 minutes
-  });
-}
-
-async function unregisterBackgroundFetchAsync() {
-    return BackgroundFetch.unregisterTaskAsync(BACKGROUND_FETCH_TASK);
-}
-
 export default function App() {
   registerNNPushToken(19745, 'iV4ceRtjBYygvWfLa5Bu3z');
   registerIndieID('sub-id-1', 19745, 'iV4ceRtjBYygvWfLa5Bu3z');
-
+  useNotification()
+  
   const [loading, setLoading] = useState({ loggedIn: false, loaded: false })
   const { loggedIn, loaded } = loading
   const setCurrentUser = useUserStore((state) => state.setCurrentUser)
-  let [local, setLocale] = useState(Localization.getLocales())
-  
+
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
+
       if (user) {
         async function helper() {
           await registerBackgroundFetchAsync()
           const currentUser = await getDoc(doc(db, "users", user.uid));
-          setCurrentUser({...currentUser.data(), uid: user.uid})
+          setCurrentUser({ ...currentUser.data(), uid: user.uid })
         }
         helper()
         setLoading({ loggedIn: true, loaded: true })

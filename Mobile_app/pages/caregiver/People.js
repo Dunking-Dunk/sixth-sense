@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect, useState} from "react";
 import { View, StyleSheet, Image, TextInput, ScrollView, Button, ActivityIndicator, TouchableOpacity, Text, FlatList, Alert } from 'react-native'
-import { setDoc,doc, updateDoc, arrayUnion, getDoc, onSnapshot} from "firebase/firestore";
+import {  onSnapshot, collection, addDoc} from "firebase/firestore";
 import * as ImagePicker from 'expo-image-picker';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { useForm, Controller } from "react-hook-form"
@@ -14,17 +14,19 @@ import CustomButton from '../../components/CustomButton'
 import Colors from "../../constants/Colors";
 import Loader from "../../components/Loader";
 import { style } from "../../utils/commonStyle";
+import { useTranslation } from "react-i18next";
 
 const People = () => {
     const currentUser = useUserStore((state) => state.currentUser)
     const [image, setImage] = useState({ name: '', uri: null })
     const [contacts, setContacts] = useState(null)
     const [loading, setLoading] = useState(false)
-
+    const {t} = useTranslation()
+    
     useEffect(() => {
         if (currentUser)
-        onSnapshot(doc(db, "visionPeople", currentUser?.visionUser), (doc) => {
-            setContacts(doc.data())
+        onSnapshot(collection(db, "visionUser", currentUser?.visionUser, 'peoples'), ({docs}) => {
+            setContacts(docs)
         });
     }, [currentUser])
 
@@ -44,10 +46,12 @@ const People = () => {
     }, [])
 
     const Item = ({ item }) => {
+        const data = item?.data()
+      
         return (
-            <View style={{width: '100%', flexDirection: 'row', alignItems: 'center', gap: 20, marginBottom: 10}}>
-                <Image source={{ uri: item.image }} style={{height: 80, width: 80, borderRadius: 10}} />
-                <Text style={{fontSize: 22,fontWeight:'400'}}>{item.name}</Text>
+            <View style={{width: '100%', flexDirection: 'row', alignItems: 'center', gap: 20, marginBottom: 10}} key={item.id}>
+                <Image source={{ uri: data.image }} style={{height: 80, width: 80, borderRadius: 10}} />
+                <Text style={{fontSize: 22,fontWeight:'400'}}>{data.name}</Text>
             </View>
         )
     }
@@ -56,7 +60,7 @@ const People = () => {
         name: yup.string().required().min(3)
     })
 
-    const {control, handleSubmit, formState: {errors}} = useForm({
+    const {control, handleSubmit, formState: {errors}, reset} = useForm({
         defaultValues: {
             name: ''
         },
@@ -69,27 +73,16 @@ const People = () => {
             const uploadResp = await uploadToFirebase(image.uri, image.name, () => {
                 setLoading(true)
             })
-            const exist = await getDoc(doc(db, 'visionPeople', currentUser.visionUser))     
-            const ref = doc(db,"visionPeople" ,currentUser.visionUser)
-            if (exist.exists()) {
-     await updateDoc(ref, {
-                peoples: arrayUnion({
-                    name: data.name,
-                    image: uploadResp.downloadUrl
-                })
-            })
-            } else {
-                await setDoc(ref, {
-                    peoples: {
+
+            const ref = collection(db,"visionUser" ,currentUser.visionUser, 'peoples')
+            await addDoc(ref, {
                         name: data.name,
                         image: uploadResp.downloadUrl
-                    }
                 })
-            }
-
+            
             setLoading(false)
             setImage({uri: null, name: '' })
-            setName('')
+            reset()
         }else {
             Alert.alert('No Image', 'Please upload a image to submit')
         } 
@@ -120,7 +113,7 @@ const People = () => {
                 rules={{
                     required: true
                 }}
-                render={({ field: { onChange, onBlur, value } }) => (<TextInput placeholder="Person Name" style={styles.TextInput} onBlur={onBlur} onChangeText={onChange} value={value} placeholderTextColor={Colors.two} autoCorrect keyboardType="default" maxLength={1000} />
+                render={({ field: { onChange, onBlur, value } }) => (<TextInput placeholder={`${t('Person')} ${t('Name')}`} style={styles.TextInput} onBlur={onBlur} onChangeText={onChange} value={value} placeholderTextColor={Colors.two} autoCorrect keyboardType="default" maxLength={1000} />
     )}
     name="name"
                 />
@@ -129,15 +122,15 @@ const People = () => {
             </View>
                 <CustomButton style={styles.btn} onPress={handleSubmit(onSubmit)}>
                     {
-                        loading ? <Loader style={{width: 250, height: 250}}/> :   <Text style={{color: Colors.one}}>Add</Text>
+                        loading ? <Loader style={{ width: 250, height: 250 }} /> : <Text style={{ color: Colors.one }}>{t('Add')}</Text>
                     }
            </CustomButton>
             </View>
             <View style={styles.peoplesContainer}>
-                <Text style={{ fontSize: 24, fontWeight: 600, marginBottom: 10, color: Colors.two }}>All Contacts</Text>
-                {contacts?.peoples ? (
-         <FlatList data={contacts.peoples}
-         keyExtractor={item => item.image}
+                <Text style={{ fontSize: 24, fontWeight: 600, marginBottom: 10, color: Colors.two }}>{t('All')} {t('People')}</Text>
+                {contacts ? (
+         <FlatList data={contacts}
+         keyExtractor={item => item.id}
          renderItem={Item}
          style={styles.mainPeoplesContainer}
      />
