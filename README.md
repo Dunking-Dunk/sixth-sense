@@ -24,7 +24,7 @@
 
 <div align="center">
 
-[🚀 Live Demo](#) • [📱 Mobile App](#) • [🔧 Hardware Setup](#hardware-components) • [📖 Documentation](#getting-started) • [🐛 Report Issues](https://github.com/Kishorecoder96/sixth-sense/issues)
+[🚀 Live Demo](https://www.youtube.com/watch?v=6Zw5p2oYKbo) • [🔧 Hardware Setup](#hardware-components) • [📖 Documentation](#getting-started) • [🐛 Report Issues](https://github.com/Kishorecoder96/sixth-sense/issues)
 
 </div>
 
