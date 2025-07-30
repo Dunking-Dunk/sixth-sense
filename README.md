@@ -1,96 +1,122 @@
+<h1 align="center">🦯 Sixth Sense: Personal Companion for the Visually Impaired</h1>
 
-<h1>A Personal companion device for blind people to help them for navigation,communication and environmental awareness</h1>
-
-### TECHNOLOGY ARSENAL
-
-##### FRONTEND
----
-| Framework | Platform |
-|------ |------- |
-| React Native | Android/ios | <img width="16" height="16" src="https://img.icons8.com/office/16/react.png" alt="react"/> |
-
+<p align="center">
+  Empowering navigation, communication, and environmental awareness through AI and hardware integration.
+</p>
 
 ---
-##### BACKEND
+
+## 🛠️ Technology Arsenal
+
+### 📱 Frontend
+
+| Framework     | Platform      | Icon |
+|--------------|---------------|------|
+| React Native | Android / iOS | <img width="20" src="https://img.icons8.com/office/16/react.png" alt="React Native" /> |
+
 ---
-| Framework | Usage |
-|------ |------- |
-|Firebase | Infrastructure and security|
 
-##### AI 
+### 🔙 Backend
+
+| Framework | Usage                     |
+|----------|---------------------------|
+| Firebase | Infrastructure & Security |
+
 ---
-| MODELS | PURPOSE |
-|----- |----- |
-| Gemini | for answering questions |
-| Gemini Vision pro | for describe the image |
-| yolo |for object detection |
-| OpenCV | for face recognition |
-| Easy OCR | for extract images
 
-##### Programming Languages
-<img width="48" height="48" src="https://img.icons8.com/fluency/48/python.png" alt="python"/><img width="48" height="48" src="https://img.icons8.com/color/48/javascript--v1.png" alt="javascript--v1"/>
+### 🧠 AI Models
 
-##### Hardware
+| Model              | Purpose                 |
+|-------------------|-------------------------|
+| Gemini            | Conversational assistant |
+| Gemini Vision Pro | Image understanding      |
+| YOLOv8            | Object detection         |
+| OpenCV            | Face recognition         |
+| EasyOCR           | Image text extraction    |
 
-- Raspberry pi 5
+---
+
+### 💻 Programming Languages
+
+<img width="48" src="https://img.icons8.com/fluency/48/python.png" alt="Python" />&nbsp;&nbsp;&nbsp;
+<img width="48" src="https://img.icons8.com/color/48/javascript--v1.png" alt="JavaScript" />
+
+---
+
+### 🔌 Hardware Components
+
+- Raspberry Pi 5
 - Microphone
 - Webcam
-- Power Bank (20000 mah)
+- Power Bank (20000 mAh)
 - GPS Module
-- Gyroscope sensor
-
-#### Features
-- Enviromental Awarness
-- AI Assistant
-- Navigation System
-- Live Location Tracking
-- Alert System
-- Voice Messaging
-- Caregiver App
-- Face Recognition
-
-
-
----
-##### Face Recognition
-Searches for faces and once detected it measures the distance between the particular face and the camera.If the distance is less than the given safe distance it warns the person by displaying a warning text and directs them to take a different path.
-
-
----
-##### Fall Detection
-
-Utilizing the gyroscope sensor data obtained from Pi 5, we process the information using our model to determine whether the user has fallen or not.
-
-
----
-##### Obect Detection
-It checks for all the objects that are visible is the camera and displays the name of the object which are saved in YOLO V8, along with the probability.
-
-
----
-Once a object is detected it uses the color of the object to measure the distance between the object and the camera and if the distance is less than the given safe distance then it warns the person by displaying a warning text and directs them to take a different direction.
-
-
-
-
+- Gyroscope Sensor
 
 ---
 
-This is the main python file which include all the speech to text converting functions which helps in reading out the warnings and texts from all the above mentioned files.And also with the help of Gemini and Gemini Vision Pro the blind person is able to have a full fledged human like conversation and at the same time fulfilling their day to day needs and requirements
-# Project Name
+## ✨ Features
 
-This is a React Native project for sixth sense [caretaker app].
+- ✅ Environmental Awareness  
+- ✅ AI Assistant  
+- ✅ Navigation System  
+- ✅ Live Location Tracking  
+- ✅ Alert & Warning System  
+- ✅ Voice Messaging  
+- ✅ Caregiver App  
+- ✅ Face Recognition  
 
-## Getting Started
+---
 
-To get started with this project, follow these steps:
+## 🧍‍♂️ Face Recognition
 
-### Prerequisites
+Uses OpenCV to detect faces. Once a face is detected:
+- Calculates the distance from the camera.
+- If the distance is **below a safe threshold**, a **warning** is triggered.
+- Guides the user to a safer route.
 
-Make sure you have the following installed:
+---
 
-- Node.js
-- npm 
+## 🚨 Fall Detection
+
+By analyzing **gyroscope sensor data** from Raspberry Pi 5:
+- Trained model detects falls.
+- Alerts can be sent to caregivers through the app.
+
+---
+
+## 🧳 Object Detection
+
+- Uses YOLOv8 to detect nearby objects with confidence scores.
+- After detection, calculates object distance using **color segmentation** and **depth estimation**.
+- If too close, a **text warning** and **voice prompt** are activated.
+
+---
+
+## 🗣️ Speech and Text Conversion
+
+The main Python script handles:
+- Speech-to-text and text-to-speech functionalities.
+- Integration with **Gemini** and **Gemini Vision Pro** for intelligent conversations.
+- Assists with day-to-day questions, reading out warnings, and navigating surroundings.
+
+---
+
+## 📲 Project Name: Sixth Sense [Caretaker App]
+
+A cross-platform React Native mobile application paired with a Raspberry Pi–powered AI hardware setup.
+
+---
+
+## 🚀 Getting Started
+
+### 📦 Prerequisites
+
+Make sure the following are installed:
+- Node.js  
+- npm  
+- Python 3
+
+---
 
 ### Installation
 
